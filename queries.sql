@@ -143,3 +143,4 @@ ROLLBACK;
 
   -- What specialty should Maisy Smith consider getting? Look for the species she gets the most.
   SELECT species.name as species, COUNT(*) from visits JOIN vets ON vets.id = visits.vet_id JOIN animals ON animals.id = visits.animal_id JOIN species ON species.id = animals.species_id WHERE vets.id = 2 GROUP BY species.name;
+  
