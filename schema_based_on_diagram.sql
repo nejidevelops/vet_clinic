@@ -1,54 +1,51 @@
-CREATE TABLE "specializations"(
-    "species_Id" INTEGER NOT NULL,
-    "vet_id" INTEGER NOT NULL
-);
-CREATE TABLE "vets"(
-    "id" BIGINT NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "age" INTEGER NOT NULL,
-    "date_of_graduation" DATE NOT NULL
-);
-ALTER TABLE
-    "vets" ADD PRIMARY KEY("id");
-CREATE TABLE "visits"(
-    "animal_id" INTEGER NOT NULL,
-    "vet_id" INTEGER NOT NULL,
-    "date_of_visit" DATE NOT NULL
-);
-CREATE TABLE "animals"(
+CREATE TABLE "patients"(
     "id" INTEGER NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    "date_of_birth" DATE NOT NULL,
-    "escape_attempts" INTEGER NOT NULL,
-    "neutered" BOOLEAN NOT NULL,
-    "weight_kg" DOUBLE PRECISION NOT NULL,
-    "species_id" INTEGER NOT NULL,
-    "owner_id" INTEGER NOT NULL
+    "date_of_birth" DATE NOT NULL
 );
 ALTER TABLE
-    "animals" ADD PRIMARY KEY("id");
-CREATE TABLE "species"(
-    "id" BIGINT NOT NULL,
+    "patients" ADD PRIMARY KEY("id");
+CREATE TABLE "invoices"(
+    "id" INTEGER NOT NULL,
+    "total_amount" DECIMAL(8, 2) NOT NULL,
+    "generated_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
+    "payed_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
+    "medical_history_id" INTEGER NOT NULL
+);
+ALTER TABLE
+    "invoices" ADD PRIMARY KEY("id");
+CREATE TABLE "medical_histories"(
+    "id" INTEGER NOT NULL,
+    "admitted_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
+    "patient_id" INTEGER NOT NULL,
+    "status" VARCHAR(255) NOT NULL
+);
+ALTER TABLE
+    "medical_histories" ADD PRIMARY KEY("id");
+CREATE TABLE "treatments"(
+    "id" INTEGER NOT NULL,
+    "type" VARCHAR(255) NOT NULL,
     "name" VARCHAR(255) NOT NULL
 );
 ALTER TABLE
-    "species" ADD PRIMARY KEY("id");
-CREATE TABLE "owners"(
+    "treatments" ADD PRIMARY KEY("id");
+CREATE TABLE "invoice_items"(
     "id" INTEGER NOT NULL,
-    "full_name" VARCHAR(255) NOT NULL,
-    "age" INTEGER NOT NULL
+    "unit_price" DECIMAL(8, 2) NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "total_price" DECIMAL(8, 2) NOT NULL,
+    "invoice_id" INTEGER NOT NULL,
+    "treatment_id" INTEGER NOT NULL
 );
 ALTER TABLE
-    "owners" ADD PRIMARY KEY("id");
+    "invoice_items" ADD PRIMARY KEY("id");
 ALTER TABLE
-    "specializations" ADD CONSTRAINT "specializations_species_id_foreign" FOREIGN KEY("species_Id") REFERENCES "species"("id");
+    "medical_histories" ADD CONSTRAINT "medical_histories_patient_id_foreign" FOREIGN KEY("patient_id") REFERENCES "patients"("id");
 ALTER TABLE
-    "visits" ADD CONSTRAINT "visits_vet_id_foreign" FOREIGN KEY("vet_id") REFERENCES "vets"("id");
+    "invoices" ADD CONSTRAINT "invoices_medical_history_id_foreign" FOREIGN KEY("medical_history_id") REFERENCES "medical_histories"("id");
 ALTER TABLE
-    "specializations" ADD CONSTRAINT "specializations_vet_id_foreign" FOREIGN KEY("vet_id") REFERENCES "vets"("id");
+    "invoice_items" ADD CONSTRAINT "invoice_items_invoice_id_foreign" FOREIGN KEY("invoice_id") REFERENCES "invoices"("id");
 ALTER TABLE
-    "animals" ADD CONSTRAINT "animals_species_id_foreign" FOREIGN KEY("species_id") REFERENCES "species"("id");
+    "invoice_items" ADD CONSTRAINT "invoice_items_treatment_id_foreign" FOREIGN KEY("treatment_id") REFERENCES "treatments"("id");
 ALTER TABLE
-    "visits" ADD CONSTRAINT "visits_animal_id_foreign" FOREIGN KEY("animal_id") REFERENCES "animals"("id");
-ALTER TABLE
-    "animals" ADD CONSTRAINT "animals_owner_id_foreign" FOREIGN KEY("owner_id") REFERENCES "owners"("id");
+    "treatments" ADD CONSTRAINT "treatments_id_foreign" FOREIGN KEY("id") REFERENCES "medical_histories"("id");
