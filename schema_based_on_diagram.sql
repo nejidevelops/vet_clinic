@@ -29,6 +29,13 @@ CREATE TABLE "treatments"(
 );
 ALTER TABLE
     "treatments" ADD PRIMARY KEY("id");
+CREATE TABLE medical_history_treatments (
+  medical_history_id INT,
+  treatment_id INT,
+  PRIMARY KEY (medical_history_id, treatment_id),
+  FOREIGN KEY (medical_history_id) REFERENCES medical_histories (id),
+  FOREIGN KEY (treatment_id) REFERENCES treatments (id)
+);
 CREATE TABLE "invoice_items"(
     "id" INTEGER NOT NULL,
     "unit_price" DECIMAL(8, 2) NOT NULL,
@@ -49,3 +56,14 @@ ALTER TABLE
     "invoice_items" ADD CONSTRAINT "invoice_items_treatment_id_foreign" FOREIGN KEY("treatment_id") REFERENCES "treatments"("id");
 ALTER TABLE
     "treatments" ADD CONSTRAINT "treatments_id_foreign" FOREIGN KEY("id") REFERENCES "medical_histories"("id");
+CREATE INDEX idx_medhist_id ON medical_history_treatments (medical_history_id);
+
+CREATE INDEX idx_treatment_id ON medical_history_treatments (treatment_id);
+
+CREATE INDEX idx_invoice_items_invoice_id ON invoice_items (invoice_id);
+
+CREATE INDEX idx_invoice_items_treatment_id ON invoice_items (treatment_id);
+
+CREATE INDEX idx_invoices_medicalhistory_id ON invoices (medical_history_id);
+
+CREATE INDEX idx_patient_id ON medical_histories (patient_id);
